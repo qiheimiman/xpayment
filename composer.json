@@ -1,0 +1,20 @@
+{
+    "name": "xjh/xpayment",
+    "description": "This is cjc's first composer package.",
+    "type": "library",
+    "require": {
+        "php": ">=7.0",
+        "ext-bcmath": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-SimpleXML": "*",
+        "ext-xml": "*",
+        "ext-openssl": "*",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "license": "Apache-2.0",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {"Cjc\\": "src/Cjc"}
+    }
+}
