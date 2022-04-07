@@ -9,10 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Supports;
+namespace XPayment\Supports;
 
 use InvalidArgumentException;
-use Payment\Payment;
+use XPayment\Payment;
 
 /**
  * @package Payment\Supports
@@ -50,7 +50,7 @@ class ProxyFactory
     {
         $name = ucfirst(str_replace(['-', '_', ''], '', $proxyName));
 
-        return "Payment\\Proxies\\{$name}Proxy";
+        return "XPayment\\Proxies\\{$name}Proxy";
     }
 
     /**

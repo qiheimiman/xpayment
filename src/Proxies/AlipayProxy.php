@@ -9,26 +9,26 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Proxies;
+namespace XPayment\Proxies;
 
 use InvalidArgumentException;
-use Payment\Contracts\IGatewayRequest;
-use Payment\Contracts\IPayNotify;
-use Payment\Contracts\IPayProxy;
-use Payment\Contracts\IQueryProxy;
-use Payment\Contracts\ITransferProxy;
-use Payment\Exceptions\GatewayException;
-use Payment\Gateways\Alipay\Bill;
-use Payment\Gateways\Alipay\CancelTrade;
-use Payment\Gateways\Alipay\CloseTrade;
-use Payment\Gateways\Alipay\Notify;
-use Payment\Gateways\Alipay\Refund;
-use Payment\Gateways\Alipay\RefundQuery;
-use Payment\Gateways\Alipay\TradeQuery;
-use Payment\Gateways\Alipay\Transfer;
-use Payment\Gateways\Alipay\TransferQuery;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Contracts\IPayNotify;
+use XPayment\Contracts\IPayProxy;
+use XPayment\Contracts\IQueryProxy;
+use XPayment\Contracts\ITransferProxy;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Gateways\Alipay\Bill;
+use XPayment\Gateways\Alipay\CancelTrade;
+use XPayment\Gateways\Alipay\CloseTrade;
+use XPayment\Gateways\Alipay\Notify;
+use XPayment\Gateways\Alipay\Refund;
+use XPayment\Gateways\Alipay\RefundQuery;
+use XPayment\Gateways\Alipay\TradeQuery;
+use XPayment\Gateways\Alipay\Transfer;
+use XPayment\Gateways\Alipay\TransferQuery;
+use XPayment\Payment;
+use XPayment\Supports\BaseObject;
 
 /**
  * @package Payment\Proxys
@@ -50,6 +50,7 @@ class AlipayProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
      */
     public function pay(string $channel, array $requestParams)
     {
+
         $className = $this->getChargeClass($channel);
         if (!class_exists($className)) {
             throw new InvalidArgumentException(sprintf('Gateway [%s] not exists.', $className), Payment::CLASS_NOT_EXIST);
@@ -60,6 +61,7 @@ class AlipayProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
              * @var IGatewayRequest $charge
              */
             $charge = new $className();
+
             return $charge->request($requestParams);
         } catch (GatewayException $e) {
             throw $e;
@@ -74,7 +76,7 @@ class AlipayProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
     private function getChargeClass(string $channel)
     {
         $name = ucfirst(str_replace(['-', '_', ''], '', $channel));
-        return "Payment\\Gateways\\Alipay\\{$name}Charge";
+        return "XPayment\\Gateways\\Alipay\\{$name}Charge";
     }
 
     /**
@@ -206,7 +208,7 @@ class AlipayProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
     }
 
     /**
-     * 支付宝到支付宝转账
+     * 支付宝到支付宝转账  alipay.fund.account.query(支付宝资金账户资产查询接口)
      * @param array $requestParams
      * @return mixed
      * @throws GatewayException

@@ -9,11 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
 use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+
+use XPayment\Sdk\Alipay\aop\AopClient;
+use XPayment\Sdk\Alipay\aop\request\AlipayTradeAppPayRequest;
 
 /**
  * @package Payment\Gateways\Alipay
@@ -36,12 +39,15 @@ class AppCharge extends AliBaseObject implements IGatewayRequest
      */
     public function request(array $requestParams)
     {
-        try {
-            $params = $this->buildParams(self::METHOD, $requestParams);
-            return http_build_query($params);
-        } catch (GatewayException $e) {
-            throw $e;
-        }
+
+//        try {
+
+            $base = parent::getBaseData(self::METHOD);
+
+            return $this->getBizContent($base, $requestParams);
+//        } catch (GatewayException $e) {
+//            throw $e;
+//        }
     }
 
     /**
@@ -49,8 +55,9 @@ class AppCharge extends AliBaseObject implements IGatewayRequest
      * @param array $requestParams
      * @return mixed
      */
-    protected function getBizContent(array $requestParams)
+    protected function getBizContent(array $base, array $requestParams)
     {
+
         $timeoutExp = '';
         $timeExpire = intval($requestParams['time_expire']);
         if (!empty($timeExpire)) {
@@ -58,28 +65,48 @@ class AppCharge extends AliBaseObject implements IGatewayRequest
             ($expire > 0) && $timeoutExp = $expire . 'm';// 超时时间 统一使用分钟计算
         }
 
-        $bizContent = [
-            'timeout_express' => $timeoutExp,
-            'total_amount'    => $requestParams['amount'] ?? '',
-            'product_code'    => $requestParams['product_code'] ?? '',
-            'body'            => $requestParams['body'] ?? '',
-            'subject'         => $requestParams['subject'] ?? '',
-            'out_trade_no'    => $requestParams['trade_no'] ?? '',
-            'time_expire'     => $timeExpire ? date('Y-m-d H:i', $timeExpire) : '',
-            'goods_type'      => $requestParams['goods_type'] ?? '',
-            'promo_params'    => $requestParams['promo_params'] ?? '',
-            'passback_params' => urlencode($requestParams['return_params'] ?? ''),
-            'extend_params'   => $requestParams['extend_params'] ?? '',
-            // 使用禁用列表
-            //'enable_pay_channels' => '',
-            'store_id'             => $requestParams['store_id'] ?? '',
-            'specified_channel'    => $requestParams['specified_channel'] ?? 'pcredit', //支付宝原因，当前仅支持 pcredit
-            'disable_pay_channels' => implode(self::$config->get('limit_pay', ''), ','),
-            'ext_user_info'        => $requestParams['ext_user_info'] ?? '',
-            'business_params'      => $requestParams['business_params'] ?? '',
-        ];
-        $bizContent = ArrayUtil::paraFilter($bizContent);
 
-        return $bizContent;
+
+        $aop = new AopClient ();
+        $aop->gatewayUrl = $this->gatewayUrl;
+        $aop->appId = $base['app_id'];
+        $aop->rsaPrivateKey = $base['rsaPrivateKey'];
+        $aop->alipayrsaPublicKey = $base['rsaPrivateKey'];
+        $aop->apiVersion = '1.0';
+        $aop->signType = $base['sign_type'];
+        $aop->postCharset='utf-8';
+        $aop->format='json';
+        $object = new \stdClass();
+
+        $object->out_trade_no = $requestParams['trade_no'] ?? '';
+        $object->total_amount = $requestParams['amount'];
+        $object->subject = $requestParams['subject'] ?? '';
+        $object->product_code ='QUICK_MSECURITY_PAY';
+        $object->time_expire = $timeExpire ? date('Y-m-d H:i', $timeExpire) : '';
+        $object->passback_params = urlencode($requestParams['return_params'] ?? '');
+        $object->disable_pay_channels = implode(self::$config->get('limit_pay', ''), ',');
+
+        ////商品信息明细，按需传入
+        // $goodsDetail = [
+        //     [
+        //         'goods_id'=>'goodsNo1',
+        //         'goods_name'=>'子商品1',
+        //         'quantity'=>1,
+        //         'price'=>0.01,
+        //     ],
+        // ];
+        // $object->goodsDetail = $goodsDetail;
+        // //扩展信息，按需传入
+        // $extendParams = [
+        //     'sys_service_provider_id'=>'2088511833207846',
+        // ];
+        //  $object->extend_params = $extendParams;
+        $json = json_encode($object);
+        $request = new AlipayTradeAppPayRequest();
+        $request->setNotifyUrl($base['notify_url']);
+        $request->setBizContent($json);
+        $result = $aop->sdkExecute ( $request);
+        return $result;
     }
+
 }

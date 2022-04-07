@@ -9,16 +9,16 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Helpers\Rsa2Encrypt;
-use Payment\Helpers\RsaEncrypt;
-use Payment\Helpers\StrUtil;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
-use Payment\Supports\HttpRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Helpers\Rsa2Encrypt;
+use XPayment\Helpers\RsaEncrypt;
+use XPayment\Helpers\StrUtil;
+use XPayment\Payment;
+use XPayment\Supports\BaseObject;
+use XPayment\Supports\HttpRequest;
 
 /**
  * @package Payment\Gateways\Alipay
@@ -65,32 +65,19 @@ abstract class AliBaseObject extends BaseObject
      */
     public function __construct()
     {
+
         $this->isSandbox = self::$config->get('use_sandbox', false);
         $this->returnRaw = self::$config->get('return_raw', false);
-
-        // 新版本，需要提供独立的支付宝公钥信息。每一个应用，公钥都不相同
-        $rsaPublicKey = self::$config->get('ali_public_key', '');
-        if ($rsaPublicKey) {
-            $this->publicKey = StrUtil::getRsaKeyValue($rsaPublicKey, 'public');
-        }
-        if (empty($this->publicKey)) {
-            throw new GatewayException('please set ali public key', Payment::PARAMS_ERR);
-        }
-
-        // 初始 RSA私钥文件 需要检查该文件是否存在
-        $rsaPrivateKey = self::$config->get('rsa_private_key', '');
-        if ($rsaPrivateKey) {
-            $this->privateKey = StrUtil::getRsaKeyValue($rsaPrivateKey, 'private');
-        }
-        if (empty($this->privateKey)) {
-            throw new GatewayException('please set ali private key', Payment::PARAMS_ERR);
-        }
 
         // 初始 支付宝网关地址
         $this->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
         if ($this->isSandbox) {
             $this->gatewayUrl = 'https://openapi.alipaydev.com/gateway.do';
         }
+
+        $this->publicKey = self::$config->get('rsaPublicKey', false);
+        $this->privateKey = self::$config->get('rsaPrivateKey', false);
+
     }
 
     /**
@@ -216,7 +203,7 @@ abstract class AliBaseObject extends BaseObject
      * @param array $bizContent
      * @return array
      */
-    private function getBaseData(string $method, array $bizContent)
+    protected function getBaseData(string $method)
     {
         $requestData = [
             'app_id'     => self::$config->get('app_id', ''),
@@ -228,15 +215,30 @@ abstract class AliBaseObject extends BaseObject
             'timestamp'  => date('Y-m-d H:i:s'),
             'version'    => '1.0',
             'notify_url' => self::$config->get('notify_url', ''),
-            // 'app_auth_token' => '', // 暂时不用
-            'biz_content' => json_encode($bizContent, JSON_UNESCAPED_UNICODE),
+
+            'alipayrsaPublicKey' => $this->publicKey,
+
+            /** 密钥格式为pkcs1，如何获取私钥请参考：https://opensupport.alipay.com/support/helpcenter/207/201602469554  **/
+            'rsaPrivateKey' => $this->privateKey,
+
+            /** 应用公钥证书路径，下载后保存位置的绝对路径  **/
+            'appCertPath' => self::$config->get('appCertPath', ''),
+
+            /** 支付宝公钥证书路径，下载后保存位置的绝对路径 **/
+            'alipayCertPath' => self::$config->get('alipayCertPath', ''),
+
+            /** 支付宝根证书路径，下载后保存位置的绝对路径 **/
+            'rootCertPath' => self::$config->get('rootCertPath', ''),
+
         ];
-        return ArrayUtil::arraySort($requestData);
+
+
+        return $requestData;
     }
 
     /**
      * @param array $requestParams
      * @return mixed
      */
-    abstract protected function getBizContent(array $requestParams);
+    abstract protected function getBizContent(array $base, array $requestParams);
 }

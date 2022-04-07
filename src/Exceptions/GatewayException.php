@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Exceptions;
+namespace XPayment\Exceptions;
 
 /**
  * @package Payment\Exception

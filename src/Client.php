@@ -49,6 +49,8 @@ class Client
     /*----------------支付宝--------------------*/
     const ALI_CHANNEL_APP = 'app';// 支付宝 手机app 支付
 
+    const ALI_CHANNEL_CERTIFICATE_APP = 'CertificateApp';// 支付宝 手机app 支付(证书模式)
+
     const ALI_CHANNEL_WAP = 'wap';// 支付宝 手机网页 支付
 
     const ALI_CHANNEL_WEB = 'web';// 支付宝 PC 网页支付

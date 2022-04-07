@@ -61,27 +61,36 @@ class Refund extends AliBaseObject implements IGatewayRequest
      */
     public function request(array $requestParams)
     {
-        try {
-            $params = $this->buildParams(self::METHOD, $requestParams);
-            $ret    = $this->get($this->gatewayUrl, $params);
-            $retArr = json_decode($ret, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new GatewayException(sprintf('format refund data get error, [%s]', json_last_error_msg()), Payment::FORMAT_DATA_ERR, ['raw' => $ret]);
-            }
+        $aop = new AopClient ();
+        $aop->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
+        $aop->appId = 'your app_id';
+        $aop->rsaPrivateKey = '请填写开发者私钥去头去尾去回车，一行字符串';
+        $aop->alipayrsaPublicKey='请填写支付宝公钥，一行字符串';
+        $aop->apiVersion = '1.0';
+        $aop->signType = 'RSA2';
+        $aop->postCharset='GBK';
+        $aop->format='json';
+        $object = new stdClass();
+        $object->trade_no = '2021081722001419121412730660';
+        $object->refund_amount = 0.01;
+        $object->out_request_no = 'HZ01RF001';
+        //// 返回参数选项，按需传入
+        //$queryOptions =[
+        //   'refund_detail_item_list'
+        //];
+        //$object->query_options = $queryOptions;
+        $json = json_encode($object);
+        $request = new AlipayTradeRefundRequest();
+        $request->setBizContent($json);
 
-            $content = $retArr['alipay_trade_refund_response'];
-            if ($content['code'] !== self::REQ_SUC) {
-                throw new GatewayException(sprintf('request get failed, msg[%s], sub_msg[%s]', $content['msg'], $content['sub_msg']), Payment::SIGN_ERR, $content);
-            }
+        $result = $aop->execute ( $request);
 
-            $signFlag = $this->verifySign($content, $retArr['sign']);
-            if (!$signFlag) {
-                throw new GatewayException('check sign failed', Payment::SIGN_ERR, $retArr);
-            }
-
-            return $content;
-        } catch (GatewayException $e) {
-            throw $e;
+        $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
+        $resultCode = $result->$responseNode->code;
+        if(!empty($resultCode)&&$resultCode == 10000){
+            echo "成功";
+        } else {
+            echo "失败";
         }
     }
 }

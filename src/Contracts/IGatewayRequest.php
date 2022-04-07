@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Contracts;
+namespace XPayment\Contracts;
 
-use Payment\Exceptions\GatewayException;
+use XPayment\Exceptions\GatewayException;
 
 /**
  * @package Payment\Contracts

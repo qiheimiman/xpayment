@@ -9,12 +9,21 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Payment;
+
+
+use XPayment\Sdk\Alipay\aop\AopCertClient;
+use XPayment\Sdk\Alipay\aop\AopClient;
+use XPayment\Sdk\Alipay\aop\AlipayConfig;
+
+use XPayment\Sdk\Alipay\aop\request\AlipayFundTransCommonQueryRequest;
+
+
 
 /**
  * @package Payment\Gateways\Alipay
@@ -26,21 +35,48 @@ use Payment\Payment;
  **/
 class TransferQuery extends AliBaseObject implements IGatewayRequest
 {
-    const METHOD = 'alipay.fund.trans.order.query';
+    const METHOD = 'alipay.fund.trans.common.query';
 
     /**
+     * @param array $base
      * @param array $requestParams
      * @return mixed
      */
-    protected function getBizContent(array $requestParams)
+    protected function getBizContent(array $base, array $requestParams)
     {
-        $bizContent = [
-            'out_biz_no' => $requestParams['trans_no'] ?? '',
-            'order_id'   => $requestParams['transaction_id'] ?? '',
-        ];
-        $bizContent = ArrayUtil::paraFilter($bizContent);
 
-        return $bizContent;
+
+        $privateKey = $base['rsaPrivateKey']; //私钥
+        $alipayPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyzZe+mW+T9xRki1WJoGQrjzg97X3AUhcRYvDb5RpTFIS9P3vyl0mJENEPhjS5EBUWyrtqlVg8RNckSYwsn7IKcy3+qQU7v9VESNYgjoxtA78h+fzMB+BTye6Al/jHlxYqYn2Q8/PcrMdYF6P7On3Npvgf81fNYPElJ3JKmZ10U40ejcs4JrCTmdPvfvV5yAu25nQMzk+vj+sl/4UUZxJJcRpe1yJhWucZ8EnDZbr4O9ucqSCjPS8U0tuKlrnwvhnGOd/gM8zVMhNEXuEhR5Lq+06449tYUGb5OMNMQjzcLXQtIYf6tm0CwmYkgYjqwWxQyLlc3iju4kKK8z1KWK8LQIDAQAB';//支付宝公钥
+        $alipayConfig = new AlipayConfig();
+        $alipayConfig->setServerUrl($this->gatewayUrl);
+        $alipayConfig->setAppId($base['app_id']);
+        $alipayConfig->setPrivateKey($privateKey);
+        $alipayConfig->setFormat("json");
+//        $alipayConfig->setAlipayPublicKey($alipayPublicKey);
+        $alipayConfig->setCharset("UTF-8");
+        $alipayConfig->setSignType($base['sign_type']);
+
+        $alipayConfig->setRootCertPath( $base['rootCertPath']);
+        $alipayConfig->setAppCertPath( $base['appCertPath']);
+        $alipayConfig->setAlipayPublicCertPath( $base['alipayCertPath']);
+
+
+        $alipayClient = new AopClient($alipayConfig);
+
+        $request = new AlipayFundTransCommonQueryRequest();
+        $request->setBizContent("{".
+            "\"out_biz_no\":\"100001111111\",".
+            "\"order_id\":\"20220405020070011500090025835210\",".
+            "\"biz_scene\":\"DIRECT_TRANSFER\",".
+            "\"pay_fund_order_id\":\"20220405020070011500090025835210\",".
+            "\"product_code\":\"TRANS_ACCOUNT_NO_PWD\"".
+            "}");
+        $responseResult = $alipayClient->execute($request);
+        $responseApiName = str_replace(".","_",$request->getApiMethodName())."_response";
+        $response = $responseResult->$responseApiName;
+
+        return $response;
     }
 
     /**
@@ -52,24 +88,8 @@ class TransferQuery extends AliBaseObject implements IGatewayRequest
     public function request(array $requestParams)
     {
         try {
-            $params = $this->buildParams(self::METHOD, $requestParams);
-            $ret    = $this->get($this->gatewayUrl, $params);
-            $retArr = json_decode($ret, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new GatewayException(sprintf('format transfer query data get error, [%s]', json_last_error_msg()), Payment::FORMAT_DATA_ERR, ['raw' => $ret]);
-            }
-
-            $content = $retArr['alipay_fund_trans_order_query_response'];
-            if ($content['code'] !== self::REQ_SUC) {
-                throw new GatewayException(sprintf('request get failed, msg[%s], sub_msg[%s]', $content['msg'], $content['sub_msg']), Payment::SIGN_ERR, $content);
-            }
-
-            $signFlag = $this->verifySign($content, $retArr['sign']);
-            if (!$signFlag) {
-                throw new GatewayException('check sign failed', Payment::SIGN_ERR, $retArr);
-            }
-
-            return $content;
+            $base = parent::getBaseData(self::METHOD);
+            return $this->getBizContent($base, $requestParams);
         } catch (GatewayException $e) {
             throw $e;
         }
