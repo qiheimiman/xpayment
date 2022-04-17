@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,18 +9,18 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\CMBank;
+namespace XPayment\Gateways\CMBank;
 
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Helpers\RsaEncrypt;
-use Payment\Helpers\StrUtil;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
-use Payment\Supports\HttpRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Helpers\RsaEncrypt;
+use XPayment\Helpers\StrUtil;
+use XPayment\XPayment;
+use XPayment\Supports\BaseObject;
+use XPayment\Supports\HttpRequest;
 
 /**
- * @package Payment\Gateways\CMBank
+ * @package XPayment\Gateways\CMBank
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/11/26 9:52 PM
@@ -74,7 +74,7 @@ abstract class CMBaseObject extends BaseObject
             $this->publicKey = StrUtil::getRsaKeyValue($rsaPublicKey, 'public');
         }
         if (empty($this->publicKey)) {
-            throw new GatewayException('please set ali public key', Payment::PARAMS_ERR);
+            throw new GatewayException('please set ali public key', XPayment::PARAMS_ERR);
         }
     }
 
@@ -94,7 +94,7 @@ abstract class CMBaseObject extends BaseObject
                     //$sign = hash('sha256', $signStr);
                     break;
                 default:
-                    throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), Payment::PARAMS_ERR);
+                    throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), XPayment::PARAMS_ERR);
             }
         } catch (GatewayException $e) {
             throw $e;
@@ -120,9 +120,9 @@ abstract class CMBaseObject extends BaseObject
                 $rsa = new RsaEncrypt($this->publicKey);
                 return $rsa->rsaVerify($preStr, $sign);
             }
-            throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), Payment::PARAMS_ERR);
+            throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), XPayment::PARAMS_ERR);
         } catch (\Exception $e) {
-            throw new GatewayException(sprintf('check cmb pay sign failed, sign type is [%s]', $this->signType), Payment::SIGN_ERR, $data);
+            throw new GatewayException(sprintf('check cmb pay sign failed, sign type is [%s]', $this->signType), XPayment::SIGN_ERR, $data);
         }
     }
 
@@ -150,7 +150,7 @@ abstract class CMBaseObject extends BaseObject
 
             $params['sign'] = $this->makeSign($signStr);
         } catch (\Exception $e) {
-            throw new GatewayException($e->getMessage(), Payment::PARAMS_ERR);
+            throw new GatewayException($e->getMessage(), XPayment::PARAMS_ERR);
         }
 
         return $params;
@@ -187,17 +187,17 @@ abstract class CMBaseObject extends BaseObject
             $sign    = $tmp['sign'];
             $resData = $tmp['rspData'];
             if ($resData['rspCode'] !== self::REQ_SUC) {
-                throw new GatewayException($resData['rspMsg'], Payment::GATEWAY_REFUSE, $tmp);
+                throw new GatewayException($resData['rspMsg'], XPayment::GATEWAY_REFUSE, $tmp);
             }
 
             // 验证签名
             if (!$this->verifySign($resData, $sign)) {
-                throw new GatewayException('check sign failed', Payment::SIGN_ERR, $tmp);
+                throw new GatewayException('check sign failed', XPayment::SIGN_ERR, $tmp);
             }
         } catch (GatewayException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new GatewayException($e->getMessage(), Payment::PARAMS_ERR, $resData);
+            throw new GatewayException($e->getMessage(), XPayment::PARAMS_ERR, $resData);
         }
 
         return $resData;

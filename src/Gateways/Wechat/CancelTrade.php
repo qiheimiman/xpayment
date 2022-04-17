@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/11/26 6:55 PM

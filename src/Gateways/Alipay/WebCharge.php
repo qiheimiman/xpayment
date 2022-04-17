@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,14 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/30 3:12 PM

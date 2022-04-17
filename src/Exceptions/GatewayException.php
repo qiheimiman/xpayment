@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -12,7 +12,7 @@
 namespace XPayment\Exceptions;
 
 /**
- * @package Payment\Exception
+ * @package XPayment\Exception
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/28 10:13 PM

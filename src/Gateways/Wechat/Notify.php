@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,15 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Helpers\DataParser;
-use Payment\Payment;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Helpers\DataParser;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2020/2/1 3:19 下午
@@ -33,22 +33,22 @@ class Notify extends WechatBaseObject
     {
         $resArr = $this->getNotifyData();
         if (empty($resArr)) {
-            throw new GatewayException('the notify data is empty', Payment::NOTIFY_DATA_EMPTY);
+            throw new GatewayException('the notify data is empty', XPayment::NOTIFY_DATA_EMPTY);
         }
 
         if (!is_array($resArr) || $resArr['return_code'] !== self::REQ_SUC) {
-            throw new GatewayException($this->getErrorMsg($resArr), Payment::GATEWAY_REFUSE, $resArr);
+            throw new GatewayException($this->getErrorMsg($resArr), XPayment::GATEWAY_REFUSE, $resArr);
         } elseif (isset($resArr['result_code']) && $resArr['result_code'] !== self::REQ_SUC) {
-            throw new GatewayException(sprintf('code:%d, desc:%s', $resArr['err_code'], $resArr['err_code_des']), Payment::GATEWAY_CHECK_FAILED, $resArr);
+            throw new GatewayException(sprintf('code:%d, desc:%s', $resArr['err_code'], $resArr['err_code_des']), XPayment::GATEWAY_CHECK_FAILED, $resArr);
         }
 
         if (isset($resArr['sign']) && $this->verifySign($resArr) === false) {
-            throw new GatewayException('check notify data sign failed', Payment::SIGN_ERR, $resArr);
+            throw new GatewayException('check notify data sign failed', XPayment::SIGN_ERR, $resArr);
         }
 
         // 检查商户是否正确
         if (self::$config->get('app_id', '') !== $resArr['appid'] || self::$config->get('mch_id', '') !== $resArr['mch_id']) {
-            throw new GatewayException('mch info is error', Payment::MCH_INFO_ERR, $resArr);
+            throw new GatewayException('mch info is error', XPayment::MCH_INFO_ERR, $resArr);
         }
 
         $notifyType = 'pay';

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -11,7 +11,7 @@
 
 namespace XPayment\Gateways\Alipay;
 
-use Payment\Contracts\IGatewayRequest;
+use XPayment\Contracts\IGatewayRequest;
 use XPayment\Exceptions\GatewayException;
 use XPayment\Helpers\ArrayUtil;
 
@@ -19,7 +19,7 @@ use XPayment\Sdk\Alipay\aop\AopClient;
 use XPayment\Sdk\Alipay\aop\request\AlipayTradeAppPayRequest;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/28 10:21 PM
@@ -40,14 +40,13 @@ class AppCharge extends AliBaseObject implements IGatewayRequest
     public function request(array $requestParams)
     {
 
-//        try {
-
+        try {
             $base = parent::getBaseData(self::METHOD);
 
             return $this->getBizContent($base, $requestParams);
-//        } catch (GatewayException $e) {
-//            throw $e;
-//        }
+        } catch (GatewayException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -65,13 +64,11 @@ class AppCharge extends AliBaseObject implements IGatewayRequest
             ($expire > 0) && $timeoutExp = $expire . 'm';// 超时时间 统一使用分钟计算
         }
 
-
-
         $aop = new AopClient ();
         $aop->gatewayUrl = $this->gatewayUrl;
         $aop->appId = $base['app_id'];
         $aop->rsaPrivateKey = $base['rsaPrivateKey'];
-        $aop->alipayrsaPublicKey = $base['rsaPrivateKey'];
+        $aop->alipayrsaPublicKey = $base['alipayrsaPublicKey'];
         $aop->apiVersion = '1.0';
         $aop->signType = $base['sign_type'];
         $aop->postCharset='utf-8';

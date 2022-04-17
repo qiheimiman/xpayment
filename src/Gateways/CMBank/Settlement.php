@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\CMBank;
+namespace XPayment\Gateways\CMBank;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
 
 /**
- * @package Payment\Gateways\CMBank
+ * @package XPayment\Gateways\CMBank
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/11/27 7:03 PM
@@ -25,15 +25,15 @@ use Payment\Exceptions\GatewayException;
 class Settlement extends CMBaseObject implements IGatewayRequest
 {
     // 按商户时间查询
-    const MCH_METHOD = 'NetPayment/BaseHttp.dll?QuerySettledOrderByMerchantDate';
+    const MCH_METHOD = 'NetXPayment/BaseHttp.dll?QuerySettledOrderByMerchantDate';
 
-    const SANDBOX_MCH_METHOD = 'NetPayment_dl/BaseHttp.dll?QuerySettledOrderByMerchantDate';
+    const SANDBOX_MCH_METHOD = 'NetXPayment_dl/BaseHttp.dll?QuerySettledOrderByMerchantDate';
 
 
     // 按银行时间查询
-    const BANK_METHOD = 'NetPayment/BaseHttp.dll?QuerySettledOrderByBankDate';
+    const BANK_METHOD = 'NetXPayment/BaseHttp.dll?QuerySettledOrderByBankDate';
 
-    const SANDBOX_BANK_METHOD = 'NetPayment_dl/BaseHttp.dll?QuerySettledOrderByBankDate';
+    const SANDBOX_BANK_METHOD = 'NetXPayment_dl/BaseHttp.dll?QuerySettledOrderByBankDate';
 
     /**
      * 获取第三方返回结果
@@ -43,7 +43,7 @@ class Settlement extends CMBaseObject implements IGatewayRequest
      */
     public function request(array $requestParams)
     {
-        $this->gatewayUrl = 'https://payment.ebank.cmbchina.com/%s';
+        $this->gatewayUrl = 'https://XPayment.ebank.cmbchina.com/%s';
         if ($this->isSandbox) {
             $this->gatewayUrl = 'http://121.15.180.66:801/%s';
         }

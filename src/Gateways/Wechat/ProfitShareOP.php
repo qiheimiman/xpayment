@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,14 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/11/26 9:19 PM
@@ -44,7 +44,7 @@ class ProfitShareOP extends WechatBaseObject implements IGatewayRequest
             } elseif (isset($requestParams['mode']) && $requestParams['mode'] === 'del') {
                 $url = self::ADD_METHOD;
             } else {
-                throw new GatewayException('please input op mode [add|del]', Payment::PARAMS_ERR);
+                throw new GatewayException('please input op mode [add|del]', XPayment::PARAMS_ERR);
             }
 
             return $this->requestWXApi($url, $requestParams);

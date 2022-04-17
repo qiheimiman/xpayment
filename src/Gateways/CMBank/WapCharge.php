@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\CMBank;
+namespace XPayment\Gateways\CMBank;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/28 10:21 PM
@@ -24,7 +24,7 @@ use Payment\Exceptions\GatewayException;
  **/
 class WapCharge extends CMBaseObject implements IGatewayRequest
 {
-    const METHOD = 'netpayment/BaseHttp.dll?MB_EUserPay';
+    const METHOD = 'netXPayment/BaseHttp.dll?MB_EUserPay';
 
     /**
      * 获取第三方返回结果

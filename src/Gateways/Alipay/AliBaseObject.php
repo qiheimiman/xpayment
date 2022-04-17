@@ -21,7 +21,7 @@ use XPayment\Supports\BaseObject;
 use XPayment\Supports\HttpRequest;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/30 8:44 PM
@@ -75,8 +75,8 @@ abstract class AliBaseObject extends BaseObject
             $this->gatewayUrl = 'https://openapi.alipaydev.com/gateway.do';
         }
 
-        $this->publicKey = self::$config->get('rsaPublicKey', false);
-        $this->privateKey = self::$config->get('rsaPrivateKey', false);
+        $this->publicKey = self::$config->get('ali_public_key', false);
+        $this->privateKey = self::$config->get('rsa_private_key', false);
 
     }
 

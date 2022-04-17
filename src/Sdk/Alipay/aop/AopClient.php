@@ -558,6 +558,7 @@ class AopClient
 
             // 执行加密
             $enCryptContent = encrypt($apiParams['biz_content'], $this->encryptKey);
+
             $apiParams['biz_content'] = $enCryptContent;
 
         }
@@ -620,6 +621,7 @@ class AopClient
             $this->logCommunicationError($sysParams["method"], $requestUrl, "HTTP_RESPONSE_NOT_WELL_FORMED", $resp);
             return false;
         }
+
 
         // 验签
         $this->checkResponseSign($request, $signData, $resp, $respObject);
@@ -1114,9 +1116,7 @@ class AopClient
 
         if (!$this->checkEmpty($this->alipayPublicKey) || !$this->checkEmpty($this->alipayrsaPublicKey)) {
 
-
             if ($signData == null || $this->checkEmpty($signData->sign) || $this->checkEmpty($signData->signSourceData)) {
-
                 throw new \Exception(" check sign Fail! The reason : signData is Empty");
             }
 
@@ -1131,11 +1131,8 @@ class AopClient
 
 
                 if (!$checkResult) {
-
                     if (strpos($signData->signSourceData, "\\/") > 0) {
-
                         $signData->signSourceData = str_replace("\\/", "/", $signData->signSourceData);
-
                         $checkResult = $this->verify($signData->signSourceData, $signData->sign, $this->alipayPublicKey, $this->signType);
 
                         if (!$checkResult) {

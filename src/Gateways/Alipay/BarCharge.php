@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,15 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/30 3:12 PM
@@ -63,7 +63,7 @@ class BarCharge extends AliBaseObject implements IGatewayRequest
             'auth_confirm_mode'    => $requestParams['auth_confirm_mode'] ?? '',
             'terminal_params'      => $requestParams['terminal_params'] ?? '',
             'promo_params'         => $requestParams['promo_params'] ?? '',
-            'advance_payment_type' => $requestParams['advance_payment_type'] ?? '',
+            'advance_XPayment_type' => $requestParams['advance_XPayment_type'] ?? '',
             //'is_async_pay'         => $requestParams['is_async_pay'] ?? false,
         ];
         $bizContent = ArrayUtil::paraFilter($bizContent);
@@ -75,7 +75,7 @@ class BarCharge extends AliBaseObject implements IGatewayRequest
      * 获取第三方返回结果
      * @param array $requestParams
      * @return mixed
-     * @throws \Payment\Exceptions\GatewayException
+     * @throws \XPayment\Exceptions\GatewayException
      */
     public function request(array $requestParams)
     {
@@ -84,17 +84,17 @@ class BarCharge extends AliBaseObject implements IGatewayRequest
             $ret    = $this->get($this->gatewayUrl, $params);
             $retArr = json_decode($ret, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new GatewayException(sprintf('format bar data get error, [%s]', json_last_error_msg()), Payment::FORMAT_DATA_ERR, $ret);
+                throw new GatewayException(sprintf('format bar data get error, [%s]', json_last_error_msg()), XPayment::FORMAT_DATA_ERR, $ret);
             }
 
             $content = $retArr['alipay_trade_pay_response'];
             if ($content['code'] !== self::REQ_SUC) {
-                throw new GatewayException(sprintf('request get failed, msg[%s], sub_msg[%s]', $content['msg'], $content['sub_msg']), Payment::SIGN_ERR, $content);
+                throw new GatewayException(sprintf('request get failed, msg[%s], sub_msg[%s]', $content['msg'], $content['sub_msg']), XPayment::SIGN_ERR, $content);
             }
 
             $signFlag = $this->verifySign($content, $retArr['sign']);
             if (!$signFlag) {
-                throw new GatewayException('check sign failed', Payment::SIGN_ERR, $retArr);
+                throw new GatewayException('check sign failed', XPayment::SIGN_ERR, $retArr);
             }
 
             return $content;

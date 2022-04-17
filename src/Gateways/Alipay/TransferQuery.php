@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -14,7 +14,7 @@ namespace XPayment\Gateways\Alipay;
 use XPayment\Contracts\IGatewayRequest;
 use XPayment\Exceptions\GatewayException;
 use XPayment\Helpers\ArrayUtil;
-use XPayment\Payment;
+use XPayment\XPayment;
 
 
 use XPayment\Sdk\Alipay\aop\AopCertClient;
@@ -26,7 +26,7 @@ use XPayment\Sdk\Alipay\aop\request\AlipayFundTransCommonQueryRequest;
 
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/31 3:23 PM

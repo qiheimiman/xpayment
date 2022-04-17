@@ -117,7 +117,7 @@ $request->setBizContent("{" .
     "\"execute_time\":\"2019-01-23\"," .
     "\"single_amount\":10.99," .
     "\"total_amount\":600," .
-    "\"total_payments\":12" .
+    "\"total_XPayments\":12" .
     "      }" .
     "    }" .
     "  }");

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,16 +9,16 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Helpers\StrUtil;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Helpers\StrUtil;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/4/1 8:24 PM
@@ -62,7 +62,7 @@ class AppCharge extends WechatBaseObject implements IGatewayRequest
                 $signStr         = ArrayUtil::createLinkstring($payData);
                 $payData['sign'] = $this->makeSign($signStr);
             } catch (\Exception $e) {
-                throw new GatewayException($e->getMessage(), Payment::PARAMS_ERR);
+                throw new GatewayException($e->getMessage(), XPayment::PARAMS_ERR);
             }
 
             // 这三个字段是为了让前端的判断保持一致

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,14 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/4/1 8:28 PM
@@ -52,7 +52,7 @@ class Bill extends WechatBaseObject implements IGatewayRequest
     protected function formatBill(string $data)
     {
         $fields = [
-            'payment_time', 'app_id', 'mch_id', 'sub_mch_id', 'device_id', 'trade_no', 'out_trade_no', 'open_id', 'trade_type', 'trade_status', 'bank',
+            'XPayment_time', 'app_id', 'mch_id', 'sub_mch_id', 'device_id', 'trade_no', 'out_trade_no', 'open_id', 'trade_type', 'trade_status', 'bank',
             'fee_type', 'request_amount', 'coupon_amount', 'refund_no', 'out_refund_no', 'refund_amount', 'recharge_coupon_amount', 'refund_type',
             'refund_status', 'goods_name', 'attach', 'service_fee', 'service_tax', 'order_amount', 'apply_refund_amount', 'tax_mark',
         ];

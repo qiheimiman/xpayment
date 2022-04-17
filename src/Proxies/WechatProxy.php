@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,32 +9,32 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Proxies;
+namespace XPayment\Proxies;
 
 use InvalidArgumentException;
-use Payment\Contracts\IGatewayRequest;
-use Payment\Contracts\IPayNotify;
-use Payment\Contracts\IPayProxy;
-use Payment\Contracts\IQueryProxy;
-use Payment\Contracts\ITransferProxy;
-use Payment\Exceptions\GatewayException;
-use Payment\Gateways\Wechat\Bill;
-use Payment\Gateways\Wechat\CancelTrade;
-use Payment\Gateways\Wechat\CloseTrade;
-use Payment\Gateways\Wechat\Notify;
-use Payment\Gateways\Wechat\Refund;
-use Payment\Gateways\Wechat\RefundQuery;
-use Payment\Gateways\Wechat\Settlement;
-use Payment\Gateways\Wechat\TradeQuery;
-use Payment\Gateways\Wechat\Transfer;
-use Payment\Gateways\Wechat\TransferBank;
-use Payment\Gateways\Wechat\TransferBankQuery;
-use Payment\Gateways\Wechat\TransferQuery;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Contracts\IPayNotify;
+use XPayment\Contracts\IPayProxy;
+use XPayment\Contracts\IQueryProxy;
+use XPayment\Contracts\ITransferProxy;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Gateways\Wechat\Bill;
+use XPayment\Gateways\Wechat\CancelTrade;
+use XPayment\Gateways\Wechat\CloseTrade;
+use XPayment\Gateways\Wechat\Notify;
+use XPayment\Gateways\Wechat\Refund;
+use XPayment\Gateways\Wechat\RefundQuery;
+use XPayment\Gateways\Wechat\Settlement;
+use XPayment\Gateways\Wechat\TradeQuery;
+use XPayment\Gateways\Wechat\Transfer;
+use XPayment\Gateways\Wechat\TransferBank;
+use XPayment\Gateways\Wechat\TransferBankQuery;
+use XPayment\Gateways\Wechat\TransferQuery;
+use XPayment\XPayment;
+use XPayment\Supports\BaseObject;
 
 /**
- * @package Payment\Proxys
+ * @package XPayment\Proxys
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/28 10:25 PM
@@ -48,13 +48,13 @@ class WechatProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
      * @param string $channel
      * @param array $requestParams
      * @return mixed
-     * @throws \Payment\Exceptions\GatewayException
+     * @throws \XPayment\Exceptions\GatewayException
      */
     public function pay(string $channel, array $requestParams)
     {
         $className = $this->getChargeClass($channel);
         if (!class_exists($className)) {
-            throw new InvalidArgumentException(sprintf('Gateway [%s] not exists.', $className), Payment::CLASS_NOT_EXIST);
+            throw new InvalidArgumentException(sprintf('Gateway [%s] not exists.', $className), XPayment::CLASS_NOT_EXIST);
         }
 
         try {
@@ -76,7 +76,7 @@ class WechatProxy extends BaseObject implements IPayProxy, IQueryProxy, ITransfe
     private function getChargeClass(string $channel)
     {
         $name = ucfirst(str_replace(['-', '_', ''], '', $channel));
-        return "Payment\\Gateways\\Wechat\\{$name}Charge";
+        return "XPayment\\Gateways\\Wechat\\{$name}Charge";
     }
 
     /**

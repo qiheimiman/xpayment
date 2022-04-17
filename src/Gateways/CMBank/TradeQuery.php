@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,14 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\CMBank;
+namespace XPayment\Gateways\CMBank;
 
-use Payment\Contracts\IGatewayRequest;
-use Payment\Exceptions\GatewayException;
-use Payment\Payment;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\CMBank
+ * @package XPayment\Gateways\CMBank
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/11/27 7:16 PM
@@ -25,9 +25,9 @@ use Payment\Payment;
  **/
 class TradeQuery extends CMBaseObject implements IGatewayRequest
 {
-    const METHOD = 'NetPayment/BaseHttp.dll?QuerySingleOrder';
+    const METHOD = 'NetXPayment/BaseHttp.dll?QuerySingleOrder';
 
-    const SANDBOX_METHOD = 'NetPayment_dl/BaseHttp.dll?QuerySingleOrder';
+    const SANDBOX_METHOD = 'NetXPayment_dl/BaseHttp.dll?QuerySingleOrder';
 
     /**
      * 获取第三方返回结果
@@ -38,7 +38,7 @@ class TradeQuery extends CMBaseObject implements IGatewayRequest
     public function request(array $requestParams)
     {
         $method           = self::METHOD;
-        $this->gatewayUrl = 'https://payment.ebank.cmbchina.com/%s';
+        $this->gatewayUrl = 'https://XPayment.ebank.cmbchina.com/%s';
         if ($this->isSandbox) {
             $method           = self::SANDBOX_METHOD;
             $this->gatewayUrl = 'http://121.15.180.66:801/%s';

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Alipay;
+namespace XPayment\Gateways\Alipay;
 
-use Payment\Exceptions\GatewayException;
-use Payment\Payment;
+use XPayment\Exceptions\GatewayException;
+use XPayment\XPayment;
 
 /**
- * @package Payment\Gateways\Alipay
+ * @package XPayment\Gateways\Alipay
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2020/2/2 9:56 下午
@@ -32,7 +32,7 @@ class Notify extends AliBaseObject
     {
         $resArr = $this->getNotifyData();
         if (empty($resArr)) {
-            throw new GatewayException('the notify data is empty', Payment::NOTIFY_DATA_EMPTY);
+            throw new GatewayException('the notify data is empty', XPayment::NOTIFY_DATA_EMPTY);
         }
 
         if (isset($resArr['notify_type']) && isset($resArr['trade_status'])) {
@@ -46,11 +46,11 @@ class Notify extends AliBaseObject
         unset($resArr['sign'], $resArr['sign_type']);
 
         if ($this->verifySignForASync($resArr, $sign, $signType) === false) {
-            throw new GatewayException('check notify data sign failed', Payment::SIGN_ERR, $resArr);
+            throw new GatewayException('check notify data sign failed', XPayment::SIGN_ERR, $resArr);
         }
 
         if (!isset($resArr['app_id']) || $resArr['app_id'] != self::$config->get('app_id', '')) {
-            throw new GatewayException('mch info is error', Payment::MCH_INFO_ERR, $resArr);
+            throw new GatewayException('mch info is error', XPayment::MCH_INFO_ERR, $resArr);
         }
 
         return [

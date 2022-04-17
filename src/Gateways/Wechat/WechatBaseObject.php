@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,18 +9,18 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Gateways\Wechat;
+namespace XPayment\Gateways\Wechat;
 
-use Payment\Exceptions\GatewayException;
-use Payment\Helpers\ArrayUtil;
-use Payment\Helpers\DataParser;
-use Payment\Helpers\StrUtil;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
-use Payment\Supports\HttpRequest;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Helpers\ArrayUtil;
+use XPayment\Helpers\DataParser;
+use XPayment\Helpers\StrUtil;
+use XPayment\Payment;
+use XPayment\Supports\BaseObject;
+use XPayment\Supports\HttpRequest;
 
 /**
- * @package Payment\Gateways\Wechat
+ * @package XPayment\Gateways\Wechat
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/4/7 8:55 AM
@@ -184,7 +184,7 @@ abstract class WechatBaseObject extends BaseObject
                     $sign = strtoupper(hash_hmac('sha256', $signStr, $this->merKey));
                     break;
                 default:
-                    throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), Payment::PARAMS_ERR);
+                    throw new GatewayException(sprintf('[%s] sign type not support', $this->signType), XPayment::PARAMS_ERR);
             }
         } catch (GatewayException $e) {
             throw $e;

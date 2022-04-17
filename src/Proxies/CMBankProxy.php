@@ -1,7 +1,7 @@
 <?php
 
 /*
- * The file is part of the payment lib.
+ * The file is part of the XPayment lib.
  *
  * (c) Leo <dayugog@gmail.com>
  *
@@ -9,26 +9,26 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Payment\Proxies;
+namespace XPayment\Proxies;
 
 use InvalidArgumentException;
-use Payment\Contracts\IGatewayRequest;
-use Payment\Contracts\IPayNotify;
-use Payment\Contracts\IPayProxy;
-use Payment\Contracts\IQueryProxy;
-use Payment\Exceptions\GatewayException;
-use Payment\Gateways\CMBank\Bill;
-use Payment\Gateways\CMBank\BillRefund;
-use Payment\Gateways\CMBank\PublicKeyQuery;
-use Payment\Gateways\CMBank\Refund;
-use Payment\Gateways\CMBank\RefundQuery;
-use Payment\Gateways\CMBank\Settlement;
-use Payment\Gateways\CMBank\TradeQuery;
-use Payment\Payment;
-use Payment\Supports\BaseObject;
+use XPayment\Contracts\IGatewayRequest;
+use XPayment\Contracts\IPayNotify;
+use XPayment\Contracts\IPayProxy;
+use XPayment\Contracts\IQueryProxy;
+use XPayment\Exceptions\GatewayException;
+use XPayment\Gateways\CMBank\Bill;
+use XPayment\Gateways\CMBank\BillRefund;
+use XPayment\Gateways\CMBank\PublicKeyQuery;
+use XPayment\Gateways\CMBank\Refund;
+use XPayment\Gateways\CMBank\RefundQuery;
+use XPayment\Gateways\CMBank\Settlement;
+use XPayment\Gateways\CMBank\TradeQuery;
+use XPayment\XPayment;
+use XPayment\Supports\BaseObject;
 
 /**
- * @package Payment\Proxys
+ * @package XPayment\Proxys
  * @author  : Leo
  * @email   : dayugog@gmail.com
  * @date    : 2019/3/28 10:25 PM
@@ -48,7 +48,7 @@ class CMBankProxy extends BaseObject implements IPayProxy, IQueryProxy
     {
         $className = $this->getChargeClass($channel);
         if (!class_exists($className)) {
-            throw new InvalidArgumentException(sprintf('Gateway [%s] not exists.', $className), Payment::CLASS_NOT_EXIST);
+            throw new InvalidArgumentException(sprintf('Gateway [%s] not exists.', $className), XPayment::CLASS_NOT_EXIST);
         }
 
         try {
@@ -70,7 +70,7 @@ class CMBankProxy extends BaseObject implements IPayProxy, IQueryProxy
     private function getChargeClass(string $channel)
     {
         $name = ucfirst(str_replace(['-', '_', ''], '', $channel));
-        return "Payment\\Gateways\\CMBank\\{$name}Charge";
+        return "XPayment\\Gateways\\CMBank\\{$name}Charge";
     }
 
     /**
@@ -107,7 +107,7 @@ class CMBankProxy extends BaseObject implements IPayProxy, IQueryProxy
      */
     public function cancel(array $requestParams)
     {
-        throw new GatewayException('cmb not support the method.', Payment::NOT_SUPPORT_METHOD);
+        throw new GatewayException('cmb not support the method.', XPayment::NOT_SUPPORT_METHOD);
     }
 
     /**
@@ -118,7 +118,7 @@ class CMBankProxy extends BaseObject implements IPayProxy, IQueryProxy
      */
     public function close(array $requestParams)
     {
-        throw new GatewayException('cmb not support the method.', Payment::NOT_SUPPORT_METHOD);
+        throw new GatewayException('cmb not support the method.', XPayment::NOT_SUPPORT_METHOD);
     }
 
     /**
@@ -161,7 +161,7 @@ class CMBankProxy extends BaseObject implements IPayProxy, IQueryProxy
      */
     public function transferQuery(array $requestParams)
     {
-        throw new GatewayException('cmb not support the method.', Payment::NOT_SUPPORT_METHOD);
+        throw new GatewayException('cmb not support the method.', XPayment::NOT_SUPPORT_METHOD);
     }
 
     /**
